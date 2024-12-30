@@ -2,9 +2,10 @@
 #include <iostream>
 #include <unordered_set>
 
+struct CoordHasher;
+
 using CharGrid = std::deque<std::deque<char>>;
 using Coord    = std::pair<int, int>;
-struct CoordHasher;
 using CoordSet = std::unordered_set<Coord, CoordHasher>;
 
 struct CoordHasher
