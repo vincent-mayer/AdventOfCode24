@@ -85,7 +85,7 @@ bool isSuccess(TopoMap const& Map, Coord const& Current)
     return Map[Current.first][Current.second] == 9;
 }
 
-int findPaths(TopoMap const& Map, Coord const& StartingPoint)
+int findPaths(TopoMap const& Map, Coord const& StartingPoint, bool UniquePaths)
 {
     int ValidPathsCount = 0;
 
@@ -99,7 +99,8 @@ int findPaths(TopoMap const& Map, Coord const& StartingPoint)
         Moves.pop_back();
         if (isSuccess(Map, Current) && !Visited.count(Current))
         {
-            // Visited.insert(Current);
+            if (UniquePaths)
+                Visited.insert(Current);
             ValidPathsCount++;
             continue;
         }
@@ -113,10 +114,17 @@ int main(int Argc, char* ArgV[])
 {
     auto Map            = parse("/Users/vincentmayer/repos/AdventOfCode/10/input.txt");
     auto StartingPoints = findStartingPoints(Map);
-    int  ValidSum       = 0;
-    for (auto const& StartingPoint : StartingPoints)
-        ValidSum += findPaths(Map, StartingPoint);
+    int  ValidSum1      = 0;
+    int  ValidSum2      = 0;
 
-    std::cout << "Part 1: " << ValidSum << std::endl;
+    for (auto const& StartingPoint : StartingPoints)
+    {
+        ValidSum1 += findPaths(Map, StartingPoint, false);
+        ValidSum2 += findPaths(Map, StartingPoint, true);
+    }
+
+    std::cout << "Part 1: " << ValidSum1 << std::endl;
+    std::cout << "Part 2: " << ValidSum2 << std::endl;
+
     return 0;
 }
