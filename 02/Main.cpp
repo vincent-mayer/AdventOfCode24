@@ -21,18 +21,40 @@ IntListOfLists parse(std::istream& InputStream)
     return Data;
 }
 
-int countSafe(IntListOfLists Input)
+bool isSafe(IntList const& Data)
 {
     int     SumSafe = 0;
     IntList Diff;
-    for (IntList& Data : Input)
+    for (int i = 1; i < Data.size(); i++)
+        Diff.push_back(Data[i] - Data[i - 1]);
+    bool AllNegative = std::all_of(Diff.begin(), Diff.end(), [](int x) { return x < 0 && x >= -3; });
+    bool AllPositive = std::all_of(Diff.begin(), Diff.end(), [](int x) { return x > 0 && x <= 3; });
+    return (AllNegative || AllPositive);
+}
+
+int countSafe(IntListOfLists const& Input)
+{
+    int     SumSafe = 0;
+    IntList Diff;
+    for (IntList const& Data : Input)
+        SumSafe += isSafe(Data);
+    return SumSafe;
+}
+
+int countSafe2(IntListOfLists const& Input)
+{
+    int SumSafe = 0;
+    for (IntList const& Data : Input)
     {
-        Diff.clear();
-        for (int i = 1; i < Data.size(); i++)
-            Diff.push_back(Data[i] - Data[i - 1]);
-        bool AllNegative = std::all_of(Diff.begin(), Diff.end(), [](int x) { return x < 0 && x >= -3; });
-        bool AllPositive = std::all_of(Diff.begin(), Diff.end(), [](int x) { return x > 0 && x <= 3; });
-        SumSafe += (AllNegative || AllPositive);
+        std::vector<bool> SafeByRemoval;
+        SafeByRemoval.push_back(isSafe(Data));
+        for (int i = 0; i < Data.size(); i++)
+        {
+            IntList Slice { Data.begin(), Data.end() };
+            Slice.erase(Slice.begin() + i);
+            SafeByRemoval.push_back(isSafe(Slice));
+        }
+        SumSafe += std::any_of(SafeByRemoval.begin(), SafeByRemoval.end(), [](bool x) { return x; });
     }
     return SumSafe;
 }
@@ -40,6 +62,8 @@ int countSafe(IntListOfLists Input)
 int main(int Argc, char* ArgV[])
 {
     std::ifstream File { FilePath };
-    std::cout << countSafe(parse(File)) << std::endl;
+    auto          Data = parse(File);
+    std::cout << "Part 1: " << countSafe(Data) << std::endl;
+    std::cout << "Part 2: " << countSafe2(Data) << std::endl;
     return 0;
 }

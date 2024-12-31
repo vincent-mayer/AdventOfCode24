@@ -13,4 +13,8 @@ list_b = sorted(list_b)
 
 diff = np.abs(np.array(list_a) - np.array(list_b))
 
-print(sum(diff))
+print("Part 1: ", sum(diff))
+
+appearances = {elem: list_b.count(elem) for elem in set(list_a)}
+
+print("Part 2: ", sum(appearances.get(elem, 0) * elem for elem in list_a))
