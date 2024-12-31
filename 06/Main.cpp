@@ -64,11 +64,8 @@ Coord findStart(CharGrid const& Grid)
     return Start;
 }
 
-int main(int Argc, char* ArgV[])
+CoordSet solvePart1(CharGrid const& Grid, Coord const& Start)
 {
-    CharGrid Grid  = parse();
-    Coord    Start = findStart(Grid);
-
     CoordSet  UniquePath;
     Coord     Current          = Start;
     Direction CurrentDirection = Direction::Up;
@@ -84,7 +81,36 @@ int main(int Argc, char* ArgV[])
             CurrentDirection = nextDirection(CurrentDirection);
         }
     }
+    return UniquePath;
+}
 
-    std::cout << "Unique visits: " << UniquePath.size() << std::endl;
+CoordSet solvePart2(CharGrid const& Grid, Coord const& Start)
+{
+    CoordSet  UniquePath;
+    Coord     Current          = Start;
+    Direction CurrentDirection = Direction::Up;
+    while (Current.first > 0 && Current.first < Grid.size() && Current.second > 0 && Current.second < Grid[0].size())
+    {
+        if (auto LookAhead = move(Current, CurrentDirection); Grid[LookAhead.first][LookAhead.second] != '#')
+        {
+            Current = LookAhead;
+            UniquePath.insert(Current);
+        }
+        else
+        {
+            CurrentDirection = nextDirection(CurrentDirection);
+        }
+    }
+    return UniquePath;
+}
+
+int main(int Argc, char* ArgV[])
+{
+    CharGrid Grid  = parse();
+    Coord    Start = findStart(Grid);
+
+    std::cout << "Part 1: " << solvePart1(Grid, Start).size() << std::endl;
+    std::cout << "Part 2: " << solvePart2(Grid, Start).size() << std::endl;
+
     return 0;
 }

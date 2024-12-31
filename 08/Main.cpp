@@ -66,17 +66,47 @@ CoordSet findAntiNodes(AntennaCoords const& Antennas, CharGrid& Grid)
     return AntiNodes;
 }
 
+CoordSet findAntiNodes2(AntennaCoords const& Antennas, CharGrid& Grid)
+{
+    CoordSet AntiNodes;
+    for (auto const& [_, AntennaPositions] : Antennas)
+    {
+        int CandidateX, CandidateY;
+        for (auto const& Outer : AntennaPositions)
+        {
+            for (auto const& Inner : AntennaPositions)
+            {
+                if (Outer == Inner)
+                    continue;
+                for (int Dist = 0; Dist < 300; Dist++)
+                {
+                    int CandidateX = Inner.first + Dist * (Outer.first - Inner.first);
+                    int CandidateY = Inner.second + Dist * (Outer.second - Inner.second);
+                    if (CandidateX >= 0 && CandidateX < Grid[0].size() && CandidateY >= 0 && CandidateY < Grid.size())
+                    {
+                        Grid[CandidateY][CandidateX] = '#';
+                        AntiNodes.insert({ CandidateX, CandidateY });
+                    }
+                }
+            }
+        }
+    }
+    return AntiNodes;
+}
+
 int main(int Argc, char* ArgV[])
 {
-    CharGrid      Grid      = parse("/Users/vincentmayer/repos/AdventOfCode/08/input.txt");
-    AntennaCoords Antennas  = findAntennas(Grid);
-    auto          AntiNodes = findAntiNodes(Antennas, Grid);
+    CharGrid      Grid       = parse("/Users/vincentmayer/repos/AdventOfCode/08/input.txt");
+    AntennaCoords Antennas   = findAntennas(Grid);
+    auto          AntiNodes  = findAntiNodes(Antennas, Grid);
+    auto          AntiNodes2 = findAntiNodes2(Antennas, Grid);
     for (auto const& Row : Grid)
     {
         for (auto const& Cell : Row)
             std::cout << Cell;
         std::cout << std::endl;
     }
-    std::cout << AntiNodes.size() << std::endl;
+    std::cout << "Part 1: " << AntiNodes.size() << std::endl;
+    std::cout << "Part 2: " << AntiNodes2.size() << std::endl;
     return 0;
 }
