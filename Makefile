@@ -5,10 +5,10 @@ BIN_NAME	:=sol$(DAY)
 BIN			:=$(BUILD_DIR)/$(BIN_NAME)
 SRC			:=$(ROOT_DIR)/$(DAY)/Main.cpp
 
-CXX_FLAGS :=-g -O0 -std=c++20
+CXX_FLAGS :=-g -O0 -std=c++23
 
 ifeq ($(DEBUG),NO)
-	CXX_FLAGS :=-O3 -std=c++20
+	CXX_FLAGS :=-O3 -std=c++23
 endif
 
 $(BUILD_DIR):

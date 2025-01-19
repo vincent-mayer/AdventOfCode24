@@ -130,34 +130,34 @@ int findSidesCount(CoordSet const& Region)
         auto        C         = Perimeter[i];
         auto        Orient    = Orientations[i];
         auto        Right     = std::find(Perimeter.begin(), Perimeter.end(), Coord { C.first, C.second + 1 });
-        auto        Down      = std::find(Perimeter.begin(), Perimeter.end(), Coord { C.first - 1, C.second });
+        auto        Down      = std::find(Perimeter.begin(), Perimeter.end(), Coord { C.first + 1, C.second });
         bool        HasRight  = Right != Perimeter.end();
         bool        HasDown   = Down != Perimeter.end();
         std::string OrientStr = Orient == Orientation::Horizontal ? "Horizontal" : "Vertical";
-        // std::cout << "Coord: " << C.first << "," << C.second << " Orient: " << OrientStr << " Right: " << HasRight << " Down: " << HasDown
-        //           << std::endl;
-        if (Orient == Orientation::Horizontal
-            && (!HasRight || Orientations[std::distance(Perimeter.begin(), Right)] == Orientation::Vertical))
-        {
-            SidesCount++;
-            continue;
-        }
-        if (Orient == Orientation::Vertical
-            && (!HasDown || Orientations[std::distance(Perimeter.begin(), Down)] == Orientation::Horizontal))
-        {
-            SidesCount++;
-            continue;
-        }
-        // if (Orient == Orientation::Horizontal && !HasRight)
+        std::cout << "Coord: " << C.first << "," << C.second << " Orient: " << OrientStr << " Right: " << HasRight << " Down: " << HasDown
+                  << std::endl;
+        // if (Orient == Orientation::Horizontal
+        //     && (!HasRight || Orientations[std::distance(Perimeter.begin(), Right)] == Orientation::Vertical))
         // {
         //     SidesCount++;
         //     continue;
         // }
-        // if (Orient == Orientation::Vertical && !HasDown)
+        // if (Orient == Orientation::Vertical
+        //     && (!HasDown || Orientations[std::distance(Perimeter.begin(), Down)] == Orientation::Horizontal))
         // {
         //     SidesCount++;
         //     continue;
         // }
+        if (Orient == Orientation::Horizontal && !HasRight)
+        {
+            SidesCount++;
+            continue;
+        }
+        if (Orient == Orientation::Vertical && !HasDown)
+        {
+            SidesCount++;
+            continue;
+        }
     }
     return SidesCount;
 }
@@ -198,7 +198,7 @@ int calculatePrice2(Map const& Map)
         Known.insert(Region.begin(), Region.end());
 
         Sum += (Region.size() * Sides);
-        std::cout << "Val: " << Val << " Region: " << Region.size() << " Sides: " << Sides << std::endl;
+        // std::cout << "Val: " << Val << " Region: " << Region.size() << " Sides: " << Sides << std::endl;
     }
     return Sum;
 }
